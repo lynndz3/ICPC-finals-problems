@@ -1,0 +1,9 @@
+First, try to replicate the original magic problem with a function - given a number of rows and columns and some hard-coded values.
+
+Define constants of `maxIterations = 3` & `nthColumnPicked = 2` 
+
+
+Given 7 rows and 3 columns & a number picked by spectator (4): 
+- create a nested array (array[7][3])
+- Iterate through cards 
+-  
