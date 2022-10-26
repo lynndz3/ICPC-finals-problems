@@ -4,7 +4,15 @@ const row = 7;
 const column = 3;
 const cardPicked = 4;
 
+
+//should maybe write a function to find the location of the card for each iteration (output = location of cards)
+//then see how many iterations are needed before card is stable
+
+//and should write a function to see which order the column needs to be picked up (this thought not fully formed)
+
+
 function findLocationAtEnd() {
+    //take all the cards
     let allCards = [];
     for (let i = 1; i <= (row * column); i++) {
         allCards.push(i)
@@ -16,20 +24,20 @@ function findLocationAtEnd() {
     console.log("pick card & view cards in grid=");
     console.log(cardArray);
 
-    let cardColumn = getIndexOfCard(cardArray, 'card');
+    let cardColumn = getColumnOfCard(cardArray, 'card');
     let columnOrder = getColumnOrder(cardColumn);
     console.log("card is in " + cardColumn + " column so order tp pick up is : " + columnOrder);
 
     let finalCardArray = findFinalArray(cardArray, columnOrder);
+    console.log("card is in column " + parseInt(getColumnOfCard(finalCardArray, 'card') + 1));
+    console.log("card is in row " + parseInt(getRowOfCard(finalCardArray, 'card') + 1));
     console.log(finalCardArray);
 }
-
-
 
 function findFinalArray(nestedArray, columnOrder) {
     
     for (let i = 1; i <= maxIterations; i++) {
-            //"pick up) (aka flatten array) and reorder cards
+            //"pick up" (aka flatten array) and reorder cards
             let newCardOrder = flattenAndReorderCards(nestedArray, columnOrder);
             console.log("flattened new card order for " + i + " iteration");
             console.log(newCardOrder);
@@ -40,7 +48,7 @@ function findFinalArray(nestedArray, columnOrder) {
             console.log(nestedArray);
 
             //find out which column the card is in now
-            let cardColumn = getIndexOfCard(nestedArray, 'card');
+            let cardColumn = getColumnOfCard(nestedArray, 'card');
 
             // figure out the order of columns to pick up again based on where the card is
             columnOrder = getColumnOrder(cardColumn);
@@ -71,15 +79,22 @@ function getColumnOrder(cardColumn) {
       return columnOrder;
 }
 
-
-
-
-function getIndexOfCard(arr, card) {
+function getColumnOfCard(arr, card) {
     for (let i = 0; i < arr.length; i++) {
       let index = arr[i].indexOf(card);
       if (index > -1) {
         //return the column that the card is
         return index;
+      }
+    }
+  }
+
+  function getRowOfCard(arr, card) {
+    for (let i = 0; i < arr.length; i++) {
+      let index = arr[i].indexOf(card);
+      if (index > -1) {
+        //return the row that the card is
+        return i;
       }
     }
   }
