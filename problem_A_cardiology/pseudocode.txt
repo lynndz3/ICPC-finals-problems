@@ -10,9 +10,14 @@ Steps:
 
 
 functions to:
-- find location
-- find iterations needed for that location
-- find nth column needed to be picked up
+-- pick random card
+-- created nested array given # of rows and columns
+-- given chosenCard and nested array, return the card's starting location
+
+iterate through picking up card's column 1st, 2nd, 3rd, etc (input)
+    given a column order in which to be picked up and starting location,
+        iterate through picking up & redealing (function) - return new location
+            until location is the same twice in a row, returning # of iterations AND location (row, column)
 
 https://docs.google.com/spreadsheets/d/17f4zm1RZK8hdOeWA25LSJ3mK76ij1Sog6tq0CJ_dpOk/edit#gid=0
 

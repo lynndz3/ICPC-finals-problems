@@ -5,12 +5,6 @@ const columns = 3;
 
 //this code "finds" the final stable location at the end given the inputs above
 
-//should maybe write a function to find the location of the card for each iteration (output = location of cards)
-//then see how many iterations are needed before card is stable
-
-//and should write a function to see which order the column needs to be picked up (this thought not fully formed)
-
-//push out column, row, and iterations needed to get there.
 const chosenCard = chooseRandomCard(rows,columns);
 
 function findLocationAtEnd() {
@@ -31,9 +25,9 @@ function findLocationAtEnd() {
     console.log("card is in " + cardColumn + " column so order tp pick up is : " + orderToPickUp);
 
     let finalCardArray = findFinalArray(cardArray, orderToPickUp);
-    console.log("card is in column " + parseInt(getColumn(finalCardArray, 'card') + 1));
-    console.log("card is in row " + parseInt(getRow(finalCardArray, 'card') + 1));
     console.log(finalCardArray);
+    console.log("final location is column " + parseInt(getColumn(finalCardArray, 'card') + 1) +
+    " and row " + parseInt(getRow(finalCardArray, 'card') + 1));
 }
 
 function findFinalArray(nestedArray, orderToPickUp) {
@@ -56,10 +50,11 @@ function findFinalArray(nestedArray, orderToPickUp) {
             orderToPickUp = getOrderToPickUp(cardColumn);
             console.log("card is in " + cardColumn + " column so order tp pick up is : " + orderToPickUp);
     }
-
     return nestedArray;
 }
 
+
+//lays out the cards in a grid with chosenCard indicated
 function createNestedArray(array, chosenCard) {
     let nestedArray = [];
     let startEachRow = 0;
@@ -78,14 +73,14 @@ function createNestedArray(array, chosenCard) {
 }
 
 
-//return column order in which to pick up cards, given an array and the column of the card (this assumes pick up the right column SECOND)
+//return column order in which to pick up cards, ASSUMES you pick up the column with chosenCard SECOND (=bad)
 function getOrderToPickUp(cardColumn) {
     //pick up that column 2nd
     //create order of column picked up in array
     let orderToPickUp = [];
-    if (cardColumn-1 >= 0) {
+    if (cardColumn - 1 >= 0) {
         orderToPickUp.push(cardColumn-1, cardColumn);
-    } else if (cardColumn+1 <= columns - 1) {
+    } else if (cardColumn + 1 <= columns - 1) {
         orderToPickUp.push(cardColumn + 1, cardColumn)
     }
     let remainingColumns = 0;
@@ -123,7 +118,7 @@ function flattenAndReorderCards(nestedArray, orderToPickUp) {
     let flatten = nestedArray.flatMap(num => num);
     let newCardOrder = [];
     //"pick up" cards in the order that is needed (every 3rd card based on the column order)
-    //for as many columns as their are
+    //for as many columns as there are
     for (let i = 0; i < orderToPickUp.length; i++) {
         //cycle through the columns in their order, and push each numbers from each column into new array
         for (let j = orderToPickUp[i]; j < (rows * columns); j = j + columns)
