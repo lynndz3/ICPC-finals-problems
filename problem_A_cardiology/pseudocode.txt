@@ -1,9 +1,18 @@
-First, try to replicate the original magic problem with a function - given a number of rows and columns and some hard-coded values.
+INPUT: provide rows and columns
 
-Define constants of `maxIterations = 3` & `nthColumnPicked = 2` 
+Steps:
+2. lay out all the cards given # of rows and columns
+3. choose any card (could have the computer randomly assign a card to `chosenCard`?)
+4. determine the column that the card is in
+5. determine which order to pick up columns --> NEED HELP HERE
+6. pick and re-deal cards `n` times, 
+        such that cards end up in the same middle-most spot twice
 
 
-Given 7 rows and 3 columns & a number picked by spectator (4): 
-- create a nested array (array[7][3])
-- Iterate through cards 
--  
+functions to:
+- find location
+- find iterations needed for that location
+- find nth column needed to be picked up
+
+https://docs.google.com/spreadsheets/d/17f4zm1RZK8hdOeWA25LSJ3mK76ij1Sog6tq0CJ_dpOk/edit#gid=0
+
