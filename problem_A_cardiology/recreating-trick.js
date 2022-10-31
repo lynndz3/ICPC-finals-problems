@@ -1,9 +1,9 @@
-const nthColumnPicked = 2;
+const nthColumnPicked = 1; //1 is 2nd because array starts with 0
 const maxIterations = 3;
 const rows = 7;
 const columns = 3;
 
-//this code "finds" the final stable location at the end given the inputs above
+//this code takes any random card & "finds" the final stable location at the end given the inputs above
 
 const chosenCard = chooseRandomCard(rows,columns);
 
@@ -21,8 +21,8 @@ function findLocationAtEnd() {
     console.log(cardArray);
 
     let cardColumn = getColumn(cardArray, 'card');
-    let orderToPickUp = getOrderToPickUp(cardColumn);
-    console.log("card is in " + cardColumn + " column so order tp pick up is : " + orderToPickUp);
+    let orderToPickUp = getOrderToPickUp(nthColumnPicked, cardColumn);
+    console.log("card is in column " + cardColumn + " so order to pick up is : " + orderToPickUp);
 
     let finalCardArray = findFinalArray(cardArray, orderToPickUp);
     console.log(finalCardArray);
@@ -33,22 +33,22 @@ function findLocationAtEnd() {
 function findFinalArray(nestedArray, orderToPickUp) {
     
     for (let i = 1; i <= maxIterations; i++) {
-            //"pick up" (aka flatten array) and reorder cards
-            let newCardOrder = flattenAndReorderCards(nestedArray, orderToPickUp);
-            console.log("flattened new card order for " + i + " iteration");
-            console.log(newCardOrder);
+        //"pick up" (aka flatten array) and reorder cards
+        let newCardOrder = flattenAndReorderCards(nestedArray, orderToPickUp);
+        console.log("flattened new card order for " + i + " iteration");
+        console.log(newCardOrder);
 
-            //"deal" newly ordered cards into new nested array
-            nestedArray = createNestedArray(newCardOrder, chosenCard);
-            console.log("nested new card order for " + i + " iteration");
-            console.log(nestedArray);
+        //"deal" newly ordered cards into new nested array
+        nestedArray = createNestedArray(newCardOrder, chosenCard);
+        console.log("nested new card order for " + i + " iteration");
+        console.log(nestedArray);
 
-            //find out which column the card is in now
-            let cardColumn = getColumn(nestedArray, 'card');
+        //find out which column the card is in now
+        let cardColumn = getColumn(nestedArray, 'card');
 
-            // figure out the order of columns to pick up again based on where the card is
-            orderToPickUp = getOrderToPickUp(cardColumn);
-            console.log("card is in " + cardColumn + " column so order tp pick up is : " + orderToPickUp);
+        // figure out the order of columns to pick up again based on where the card is
+        orderToPickUp = getOrderToPickUp(nthColumnPicked, cardColumn);
+        console.log("card is in " + cardColumn + " column so order tp pick up is : " + orderToPickUp);
     }
     return nestedArray;
 }
@@ -74,24 +74,35 @@ function createNestedArray(array, chosenCard) {
 
 
 //return column order in which to pick up cards, ASSUMES you pick up the column with chosenCard SECOND (=bad)
-function getOrderToPickUp(cardColumn) {
-    //pick up that column 2nd
-    //create order of column picked up in array
-    let orderToPickUp = [];
-    if (cardColumn - 1 >= 0) {
-        orderToPickUp.push(cardColumn-1, cardColumn);
-    } else if (cardColumn + 1 <= columns - 1) {
-        orderToPickUp.push(cardColumn + 1, cardColumn)
+function getOrderToPickUp(nthColumnPicked, cardColumn) {
+    //pick up cardColumn nth (pick up the 2 column 1st = (0, 1))
+    //create an array to hold the other columns that don't have the "card"
+    let remainingColumns = [];
+    for (let j = 0; j < columns; j++) {
+        if (cardColumn != j) {
+            remainingColumns.push(j);
+        } 
     }
-    let remainingColumns = 0;
-    while (remainingColumns <= columns - 1) {
-        //if the remaining columns are not already in the array, push them in
-        if(orderToPickUp.indexOf(remainingColumns) === -1) {
-            orderToPickUp.push(remainingColumns);
+    //create array to hold the order that the columns should be picked up
+    let orderToPickUp = [];
+
+    for (let i = 0; i < columns; i++) {
+        //if it is not the time to pick up the column...
+        if (i !== nthColumnPicked) {
+            //then add any column to the array that is not the cardColumn
+            for (let x = 0; x < remainingColumns.length; x++) {
+                if (orderToPickUp.indexOf(remainingColumns[x]) === -1) {
+                orderToPickUp.push(remainingColumns[x]);
+                break;
+                }
             }
-        remainingColumns++;
-      }
-      return orderToPickUp;
+        }
+        //if it is the time to pick up the column, add that column to array in correct order
+        else if (i === nthColumnPicked) {
+            orderToPickUp.push(cardColumn);
+        }
+    }
+    return orderToPickUp;
 }
 
 function getColumn(arr, card) {
