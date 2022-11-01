@@ -20,27 +20,24 @@ function findFinalStableLocation(pthColumnPicked) {
     let maxIterations = 0;
 
     //"test" the trick 10 (or however many!) times with a random card each time
-        //to find the stable location & maximum number of iterations (shuffles/redeals) needed to get there
-    for (let i = 0; i < 5; i++) {
+        //in order to find the stable location & maximum number of iterations (shuffles/redeals) needed to get there
+    for (let i = 0; i < 10; i++) {
         //let computer pick any random card
         let chosenCard = chooseRandomCard(rows, columns);
         
         let nestedArray = createNestedArray(allCards, chosenCard);
 
-        //spectator of trick points to the starting column
-        let cardColumn = getColumn(nestedArray, "card");
-        
-        //reset how many iterations it takes to stabilize the location for each test
-        let iterationsToStabilize = 0;
-
-        //find the new the location of the card given the new chosenCard
+        //find the new the location of the chosenCard
         currentRow = getRow(nestedArray, "card");
         currentColumn = getColumn(nestedArray, "card");
 
+        //temp variables to hold stuffs
         let startingRow;
         let startingColumn;
-
         let currentArray = nestedArray;
+
+        //reset how many iterations it takes to stabilize the location for each test
+        let iterationsToStabilize = 0;
 
         do {
             //set the starting location to the current one
