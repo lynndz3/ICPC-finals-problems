@@ -1,9 +1,11 @@
+//FIRST STAB ONLY -- NOT A SOLUTION
+
 const nthColumnPicked = 1; //1 is 2nd because array starts with 0
 const maxIterations = 3;
 const rows = 7;
 const columns = 3;
 
-//this code takes any random card & "finds" the final stable location at the end given the inputs above
+//the below lets the spectator (computer) choose any random card & "finds" the final stable location, but assumes the inputs above
 
 const chosenCard = chooseRandomCard(rows,columns);
 

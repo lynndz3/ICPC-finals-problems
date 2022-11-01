@@ -1,32 +1,22 @@
+
+full problem explained here (Problem A Cardiology): https://icpc.global/worldfinals/problems/2020+ACM-ICPC+World+Finals/icpc2020.pdf 
+google sheets visualization: https://docs.google.com/spreadsheets/d/17f4zm1RZK8hdOeWA25LSJ3mK76ij1Sog6tq0CJ_dpOk/edit#gid=0
+
+
 INPUT: provide rows and columns
 
 Steps:
-1. Let computer pick any random card (chosenCard)
-2. (lay out the cards) created nested array given # of rows and columns
-3. Given chosenCard and nested array, return the card's starting location / starting column
-4. Given the starting location...    
-    cycle through picking up that card's column 1st, 2nd, 3rd -- and return new location
-            until location is the same twice in a row, then returning # of iterations AND location (row, column) in nested array
-            EXAMPLE:x
-            let finalLocations = [
-                [3, 3, 2], --if card column picked up 1st, it takes max 2 iterations to end up at (3, 4)  
-                [1, 6, 3],
-                [3, 5, 2]
-            ]
-        }*/
+1. lay out all the cards given the rows and columns into grid (nested array)
+2. spectator (computer) picks a card randomly
+3. determine which column that card is in
+4. try picking up the card's column 0th, 1st, 2nd (`pth`) etc AND...
+    5. shuffle and deal until card is at stable location
+        6.  repeat step 5 multiple times until you're sure you know max "shuffles & deals" required to get to stable loc
+    7. see how close that location is to the middle
+8. if closest to the middle, return the pth value, location (rows/columns), & iterations (shuffles & deals)
 
-
-5. take rows and columns from above as inputs and return new array with how close each is to the middle
-        if card ended at (3, 2)
-        middle is (3.5, 1.5) -- 7/2 and 3/2
-        |3.5 - 3| + |1.5 - 2| = 0
-        let closenessToMiddle = [0]
-
-  find the index of the smallest number and that = column to be picked up -- also references the array above
-
-  return the correct index of the array from finalLocations plus the column to be picked up*/
+OUTPUT: [pth column, stable row, stable column, maxiterations]
 
 
 
-https://docs.google.com/spreadsheets/d/17f4zm1RZK8hdOeWA25LSJ3mK76ij1Sog6tq0CJ_dpOk/edit#gid=0
 

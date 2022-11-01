@@ -1,65 +1,123 @@
-const rows = 7;
+const rows = 9;
 const columns = 3;
+//CHANGE INPUTS ABOVE TO TEST//
 
-//let computer pick any random card
-const chosenCard = chooseRandomCard(rows, columns);
-
-function chooseRandomCard(rows, columns) {
-    let max = rows * columns;
-    const randomNum = Math.floor(Math.random() * max + 1);
-    return randomNum;
-}
-
-//"deal" the cards out on the table
+//lay out all the cards given rows & columns above
 let allCards = [];
 for (let i = 1; i <= (rows * columns); i++) {
     allCards.push(i)
 }
-console.log("initial set of cards is=");
-console.log(allCards);
 
-//created nested array given # of rows and columns
-function createNestedArray(flatArray) {
-    let nestedArray = [];
-    let startEachRow = 0;
-    for (let i = 0; i < rows; i++) {
-        let subArray = [];
-        for (let j = startEachRow; j < startEachRow + columns; j++) {
-            if(flatArray[j] === chosenCard) {
-                subArray.push("card");
-            }
-            else subArray.push(flatArray[j]) 
+//given the card's column is picked up pth, find the final stable location & max iterations to get there
+function findFinalStableLocation(pthColumnPicked) {
+    let finalI;
+    let finalJ;
+    let finalS;
+    
+    let currentRow;
+    let currentColumn;
+
+    let maxIterations = 0;
+
+    //"test" the trick 10 (or however many!) times with a random card each time
+        //to find the stable location & maximum number of iterations (shuffles/redeals) needed to get there
+    for (let i = 0; i < 5; i++) {
+        //let computer pick any random card
+        let chosenCard = chooseRandomCard(rows, columns);
+        
+        let nestedArray = createNestedArray(allCards, chosenCard);
+
+        //spectator of trick points to the starting column
+        let cardColumn = getColumn(nestedArray, "card");
+        
+        //reset how many iterations it takes to stabilize the location for each test
+        let iterationsToStabilize = 0;
+
+        //find the new the location of the card given the new chosenCard
+        currentRow = getRow(nestedArray, "card");
+        currentColumn = getColumn(nestedArray, "card");
+
+        let startingRow;
+        let startingColumn;
+
+        let currentArray = nestedArray;
+
+        do {
+            //set the starting location to the current one
+            startingRow = currentRow;
+            startingColumn = currentColumn;
+            //"shuffle and deal" to get the next location of the card
+            let newCardOrderNested = newCardLocation(currentArray, getOrderToPickUp(pthColumnPicked, startingColumn));
+            //set current location to the new location of the card
+            [currentRow, currentColumn] = [getRow(newCardOrderNested, "card"), getColumn(newCardOrderNested, "card")];
+            iterationsToStabilize++;
+            currentArray = newCardOrderNested;
+            } 
+            //as long as the starting location is NOT the same as the current/new location
+                //because once it is the same, the card has stabilized
+            while (startingRow != currentRow || startingColumn != currentColumn);
+        
+        //always update maxIterations to the maximum # needed to stabilize 
+            //(subtract 1 because we ran through the do-while loop one extra time to ensure card was stable)
+        if (iterationsToStabilize - 1 > maxIterations - 1) {
+            maxIterations = iterationsToStabilize - 1;
         }
-        nestedArray.push(subArray);
-        startEachRow = startEachRow + columns;
     }
-    return nestedArray;
+    finalI = currentRow;
+    finalJ = currentColumn;
+    finalS = maxIterations;
+
+    return [finalI, finalJ, finalS];
 }
-let nestedArray = createNestedArray(allCards);
-console.log(nestedArray);
-//... to find starting column
-let cardColumn = getColumn(nestedArray, "card");
 
-/*given the starting column and nested array...    
-    cycle through picking up card's column 1st, 2nd, 3rd, etc (input)
-        pick up & redeal (function) - and return new location (recursive?)
-            until location is the same twice in a row, then returning # of iterations AND location (row, column) in nested array
-            let finalLocations = [
-                [3, 3, 2], --if card column picked up 1st, it takes max 2 iterations to end up at (3, 4)  
-                [1, 6, 3],
-                [3, 5, 2]
-            ]
-        }*/
 
-function findFinalLocation(nthColumnPicked) {
-    //to find MaxIterations loop until the new location of the card is the same as the last location of the card
-    let MaxIterations = 0;
-    let startingRow = getRow(nestedArray, "card");
-    let startingColumn = getColumn(nestedArray, "card");
-    while (startingRow != endingRow && startingColumn != endingColumn) {
-        //find newCardLocation
+//test out picking up the card's column each pth time, see which will get the stabilized card closest to middle, & then return all final values
+function findPthColumn() {
+    //put closness to middle calculations in an arry
+    let closenessToMiddle = [];
+    //ideally the card ends up in the very middle (idealRow, idealColumn)
+    let idealRow = rows/2;
+    let idealColumn = columns/2;
+
+    //try each pth column (p=0 means picking up the card's column first)
+    for (let p = 0; p < columns; p++) {
+        //find the card's stable row and column
+        console.log("if card's column is picked up " + (p + 1) + "th then...");
+        let actualRow = findFinalStableLocation(p)[0];
+        let actualColumn = findFinalStableLocation(p)[1];
+        console.log("stable row is = " + (actualRow + 1));
+        console.log("stable column is = " + (actualColumn + 1));
+        //calculate how close to the center that locations is
+        let calculation = (idealRow - actualRow) + (idealColumn - actualColumn);
+        console.log("and the closeness to middle score is = " + calculation);
+        closenessToMiddle.push(calculation);
     }
+    //find which calculation is closes to 0 (closest to 0 = closest to middle of grid)
+    let closestZero = 0;
+    for (let i = 0; i < closenessToMiddle.length ; i++) {
+        if (closestZero === 0) {
+            closestZero = closenessToMiddle[i];
+        } else if (closenessToMiddle[i] > 0 && closenessToMiddle[i] <= Math.abs(closestZero)) {
+            closestZero = closenessToMiddle[i];
+        } else if (closenessToMiddle[i] < 0 && - closenessToMiddle[i] < Math.abs(closestZero)) {
+            closestZero = closenessToMiddle[i];
+        }
+    }
+    //the index in the closenessToMiddle array that's closest to 0 corresponds to the pth column to pick up
+    let pthColumn = closenessToMiddle.indexOf(closestZero);
+
+    console.log("FINAL ANSWER:");
+    return [ //adding 1 to some of these because arrays start at 0 but output expected starts at 1
+        pthColumn + 1, //pth column to pick up
+        findFinalStableLocation(pthColumn)[0] + 1, //stable row
+        findFinalStableLocation(pthColumn)[1] + 1, //stable column
+        findFinalStableLocation(pthColumn)[2] //max number of iterations
+    ]
 }
+
+console.log(findPthColumn());
+
+
 
 //find new card location for just 1 iteration
 function newCardLocation(nestedArray, orderPickUp) {
@@ -73,18 +131,11 @@ function newCardLocation(nestedArray, orderPickUp) {
             newCardOrder.push(flatten[j]);
         }
     let newCardOrderNested = createNestedArray((newCardOrder));
-    console.log(newCardOrderNested);
-    let newCardLocation = [getRow(newCardOrderNested, "card"), getColumn(newCardOrderNested, "card")];
-    return newCardLocation;
+    return newCardOrderNested;
 }
 
 
-
-console.log("new card location is ");
-console.log(newCardLocation(nestedArray, getOrderToPickUp(2, cardColumn)));
-
-
-function getOrderToPickUp(nthColumnPicked, cardColumn) {
+function getOrderToPickUp(pthColumnPicked, cardColumn) {
     //pick up cardColumn nth (pick up the 2 column 1st = (0, 1))
     //create an array to hold the other columns that don't have the "card"
     let remainingColumns = [];
@@ -98,7 +149,7 @@ function getOrderToPickUp(nthColumnPicked, cardColumn) {
 
     for (let i = 0; i < columns; i++) {
         //if it is not the time to pick up the column...
-        if (i !== nthColumnPicked) {
+        if (i !== pthColumnPicked) {
             //then add any column to the array that is not the cardColumn
             for (let x = 0; x < remainingColumns.length; x++) {
                 if (orderToPickUp.indexOf(remainingColumns[x]) === -1) {
@@ -108,13 +159,36 @@ function getOrderToPickUp(nthColumnPicked, cardColumn) {
             }
         }
         //if it is the time to pick up the column, add that column to array in correct order
-        else if (i === nthColumnPicked) {
+        else if (i === pthColumnPicked) {
             orderToPickUp.push(cardColumn);
         }
     }
     return orderToPickUp;
 }
 
+function chooseRandomCard(rows, columns) {
+    let max = rows * columns;
+    const randomNum = Math.floor(Math.random() * max + 1);
+    return randomNum;
+}
+
+//"lay out the cards" -- created nested array given # of rows and columns
+function createNestedArray(flatArray, card) {
+    let nestedArray = [];
+    let startEachRow = 0;
+    for (let i = 0; i < rows; i++) {
+        let subArray = [];
+        for (let j = startEachRow; j < startEachRow + columns; j++) {
+            if(flatArray[j] === card) {
+                subArray.push("card");
+            }
+            else subArray.push(flatArray[j]) 
+        }
+        nestedArray.push(subArray);
+        startEachRow = startEachRow + columns;
+    }
+    return nestedArray;
+}
 
 function getColumn(arr, card) {
     for (let i = 0; i < arr.length; i++) {
@@ -135,14 +209,3 @@ function getRow(arr, card) {
       }
     }
   }
-
-
-/*function to take rows and columns from above as inputs and return new array with how close they are to middle
-        if 7 rows and 3 columns, 
-        middle is (3.5, 1.5)
-        |3.5 - 3| + |1.5 - 2| = 0
-        let closenessToMiddle = [0, -4, -2]
-
-  find the index of the smallest number and that = column to be picked up -- also references the array above
-
-  return the correct index of the array from finalLocations plus the column to be picked up*/
