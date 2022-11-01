@@ -118,12 +118,12 @@ console.log(findPthColumn());
 
 //find new card location for just 1 iteration
 function newCardLocation(nestedArray, orderPickUp) {
+    //flatten array to make it easier to "pick up & deal"
     let flatten = nestedArray.flatMap(num => num);
     let newCardOrder = [];
-    //"pick up" cards in the order that is needed (every 3rd card based on the column order)
     //for as many columns as there are
     for (let i = 0; i < columns; i++) {
-        //cycle through the columns in their order, and push each numbers from each column into new array
+            //"pick up" every nth card based on how many columns there are, starting with the column to pick up first
         for (let j = orderPickUp[i]; j < (rows * columns); j = j + columns)
             newCardOrder.push(flatten[j]);
         }
@@ -131,9 +131,8 @@ function newCardLocation(nestedArray, orderPickUp) {
     return newCardOrderNested;
 }
 
-
+//given the card's column and the pth column to pick up, return an array with the order to pick up the columns
 function getOrderToPickUp(pthColumnPicked, cardColumn) {
-    //pick up cardColumn nth (pick up the 2 column 1st = (0, 1))
     //create an array to hold the other columns that don't have the "card"
     let remainingColumns = [];
     for (let j = 0; j < columns; j++) {
