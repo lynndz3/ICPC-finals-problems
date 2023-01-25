@@ -1,7 +1,6 @@
 
-full problem explained here (Problem A Cardiology): https://icpc.global/worldfinals/problems/2020+ACM-ICPC+World+Finals/icpc2020.pdf 
-google sheets visualization: https://docs.google.com/spreadsheets/d/17f4zm1RZK8hdOeWA25LSJ3mK76ij1Sog6tq0CJ_dpOk/edit#gid=0
-
+Full problem explained here (Problem A Cardiology): https://icpc.global/worldfinals/problems/2020+ACM-ICPC+World+Finals/icpc2020.pdf 
+Google sheets visualization: https://docs.google.com/spreadsheets/d/17f4zm1RZK8hdOeWA25LSJ3mK76ij1Sog6tq0CJ_dpOk/edit#gid=0
 
 INPUT: provide rows and columns
 
